@@ -39,7 +39,8 @@
     <div class="right-panel">
       <div v-if="tasks.length === 0" class="empty-message">
         <p>No tasks to display. Start by adding a task!</p>
-        <!-- <img src="your-image-path-here.jpg" alt="No tasks image" /> -->
+        <ThinkingModel />
+        <q>daydreaming by Eric Wilson [CC-BY] via Poly Pizza</q>
       </div>
 
       <div v-else class="tasks">
@@ -60,12 +61,14 @@
 <script>
 import axios from "axios";
 import TaskItem from "./TaskItem.vue";
+import ThinkingModel from "./ThinkingModel.vue";
 
 const apiUrl = process.env.VUE_APP_API_URL;
 
 export default {
   components: {
     TaskItem,
+    ThinkingModel,
   },
   data() {
     return {
