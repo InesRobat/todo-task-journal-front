@@ -44,7 +44,7 @@
       </div>
 
       <div v-else class="tasks">
-        <div class="task-card" v-for="(task, index) in tasks" :key="task.id">
+        <div class="task-card" v-for="(task, index) in tasks" :key="task._id">
           <TaskItem
             :task="task"
             :index="index"
@@ -110,7 +110,7 @@ export default {
     },
     async updateTask(id) {
       try {
-        const taskToUpdate = this.tasks.find((task) => task.id === id);
+        const taskToUpdate = this.tasks.find((task) => task._id === id);
         taskToUpdate.completed = !taskToUpdate.completed;
 
         await axios.put(`${apiUrl}/tasks/${id}`, taskToUpdate);
@@ -124,7 +124,7 @@ export default {
       try {
         await axios.delete(`${apiUrl}/tasks/${id}`);
 
-        this.tasks = this.tasks.filter((task) => task.id !== id);
+        this.tasks = this.tasks.filter((task) => task._id !== id);
       } catch (error) {
         console.error("Error deleting task", error);
       }
@@ -135,7 +135,7 @@ export default {
         .then((response) => {
           const updatedTask = response.data;
 
-          const index = this.tasks.findIndex((task) => task.id === taskId);
+          const index = this.tasks.findIndex((task) => task._id === taskId);
           if (index !== -1) {
             this.tasks.splice(index, 1, updatedTask);
           }

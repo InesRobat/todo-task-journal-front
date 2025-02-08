@@ -70,10 +70,11 @@ export default {
   },
   methods: {
     updateStatus() {
-      this.$emit("update", this.task.id);
+      this.$emit("update", this.task._id);
     },
     deleteTask() {
-      this.$emit("delete", this.task.id);
+      console.log(this.task, "Task");
+      this.$emit("delete", this.task._id);
     },
     generateRandomHue() {
       return Math.floor(Math.random() * 360);
