@@ -32,7 +32,6 @@
           v-model="newTaskDate"
           required
         />
-
         <button
           @click="addTask"
           class="task-button"
@@ -94,23 +93,47 @@ export default {
       const year = today.getFullYear();
       const month = (today.getMonth() + 1).toString().padStart(2, "0");
       const day = today.getDate().toString().padStart(2, "0");
-
       return `${year}-${month}-${day}`;
     },
     handleDate(value) {
       this.newTaskDate = value;
-
       console.log("Selected date:", this.newTaskDate);
     },
+
+    // Generate and store JWT for an anonymous user if not already in localStorage
+    generateJWT() {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        axios
+          .get(`${apiUrl}/generate-jwt`)
+          .then((response) => {
+            const token = response.data.token;
+            localStorage.setItem("authToken", token); // Store token in localStorage
+          })
+          .catch((error) => {
+            console.error("Error generating JWT:", error);
+          });
+      }
+    },
+
+    // Fetch tasks from MongoDB using the JWT in localStorage
     async fetchTasks() {
+      this.generateJWT(); // Ensure JWT is generated/stored
+
+      const token = localStorage.getItem("authToken");
       try {
-        const response = await axios.get(`${apiUrl}/tasks`);
+        const response = await axios.get(`${apiUrl}/tasks`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the JWT with the request
+          },
+        });
         this.tasks = response.data;
       } catch (error) {
         console.error("Error fetching tasks", error);
       }
     },
 
+    // Add task
     async addTask() {
       if (this.newTask.trim() === "" || this.newTaskDate.trim() === "") return;
 
@@ -120,8 +143,14 @@ export default {
         date: this.newTaskDate,
       };
 
+      const token = localStorage.getItem("authToken");
+
       try {
-        const response = await axios.post(`${apiUrl}/tasks`, newTaskObj);
+        const response = await axios.post(`${apiUrl}/tasks`, newTaskObj, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the JWT with the request
+          },
+        });
         this.tasks.push(response.data);
         this.newTask = "";
         this.newTaskDate = "";
@@ -129,30 +158,58 @@ export default {
         console.error("Error adding task", error);
       }
     },
+
+    // Update task
     async updateTask(id) {
+      const token = localStorage.getItem("authToken");
+
       try {
         const taskToUpdate = this.tasks.find((task) => task._id === id);
         taskToUpdate.completed = !taskToUpdate.completed;
 
-        await axios.put(`${apiUrl}/tasks/${id}`, taskToUpdate);
+        await axios.put(`${apiUrl}/tasks/${id}`, taskToUpdate, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the JWT with the request
+          },
+        });
 
         this.fetchTasks();
       } catch (error) {
         console.error("Error updating task", error);
       }
     },
+
+    // Delete task
     async deleteTask(id) {
+      const token = localStorage.getItem("authToken");
+
       try {
-        await axios.delete(`${apiUrl}/tasks/${id}`);
+        await axios.delete(`${apiUrl}/tasks/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the JWT with the request
+          },
+        });
 
         this.tasks = this.tasks.filter((task) => task._id !== id);
       } catch (error) {
         console.error("Error deleting task", error);
       }
     },
+
+    // Toggle task completion
     toggleCompletion(taskId) {
+      const token = localStorage.getItem("authToken");
+
       axios
-        .put(`${apiUrl}/tasks/${taskId}`)
+        .put(
+          `${apiUrl}/tasks/${taskId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Send the JWT with the request
+            },
+          }
+        )
         .then((response) => {
           const updatedTask = response.data;
 
