@@ -180,40 +180,42 @@ export default {
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .task-input,
-.task-date {
+.task-date,
+.task-button {
   flex: 1;
   padding: 10px 15px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
   background-color: transparent;
   color: white;
+  box-sizing: border-box;
 }
 
-.task-input:focus {
+.task-input:focus,
+.task-date:focus,
+.task-button:focus {
   border-color: #007bff;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
 .task-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  color: #fff;
   background-color: #007bff;
-  border: none;
-  border-radius: 6px;
+  color: #fff;
   cursor: pointer;
   transition: background-color 0.3s;
+  border: none;
+  flex: inherit;
+}
 
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.task-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .task-button:hover {
@@ -249,5 +251,55 @@ export default {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .task-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .task-form {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .task-input,
+  .task-date,
+  .task-button {
+    width: 100%;
+  }
+
+  .task-button {
+    margin-top: 10px;
+    flex: 1;
+  }
+
+  .left-panel h2 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .right-panel {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .tasks {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .task-card {
+    flex-direction: column;
+    width: 100%;
+  }
 }
 </style>
