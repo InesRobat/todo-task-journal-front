@@ -24,12 +24,20 @@
           placeholder="Add a new task"
           class="task-input"
         />
-        <input v-model="newTaskDate" type="date" class="task-date" />
+        <input
+          type="date"
+          class="task-date"
+          id="date"
+          @input="handleDate($event.target.value)"
+          v-model="newTaskDate"
+          required
+        />
+
         <button
           @click="addTask"
           class="task-button"
-          :class="{ disabled: !newTaskDate }"
-          :disabled="!newTaskDate"
+          :class="{ disabled: !newTaskDate || !newTask }"
+          :disabled="!newTaskDate || !newTask"
         >
           Add
         </button>
@@ -74,13 +82,26 @@ export default {
     return {
       tasks: [],
       newTask: "",
-      newTaskDate: "",
+      newTaskDate: this.getCurrentDate(),
     };
   },
   created() {
     this.fetchTasks();
   },
   methods: {
+    getCurrentDate() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = (today.getMonth() + 1).toString().padStart(2, "0");
+      const day = today.getDate().toString().padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    },
+    handleDate(value) {
+      this.newTaskDate = value;
+
+      console.log("Selected date:", this.newTaskDate);
+    },
     async fetchTasks() {
       try {
         const response = await axios.get(`${apiUrl}/tasks`);

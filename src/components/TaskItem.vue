@@ -73,7 +73,6 @@ export default {
       this.$emit("update", this.task._id);
     },
     deleteTask() {
-      console.log(this.task, "Task");
       this.$emit("delete", this.task._id);
     },
     generateRandomHue() {
